@@ -74,6 +74,7 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-overflow-scrolling: touch;
 }
 
 ::selection {
@@ -85,6 +86,7 @@ a {
     text-decoration: none;
     color: var(--accent-primary);
     transition: var(--transition-fast);
+    touch-action: manipulation;
 }
 
 a:hover {
@@ -302,6 +304,7 @@ ul {
    =================================================== */
 .hero {
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1742,6 +1745,7 @@ ul {
         right: -100%;
         width: 280px;
         height: 100vh;
+        height: 100dvh;
         background: rgba(10, 10, 20, 0.97);
         backdrop-filter: blur(30px);
         -webkit-backdrop-filter: blur(30px);

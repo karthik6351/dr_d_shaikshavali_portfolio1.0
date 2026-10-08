@@ -222,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (heroSection) {
         window.addEventListener('mousemove', (e) => {
+            if (window.matchMedia("(hover: none)").matches) return;
             const orbs = document.querySelectorAll('.gradient-orb');
             const x = (e.clientX / window.innerWidth - 0.5) * 2;
             const y = (e.clientY / window.innerHeight - 0.5) * 2;
@@ -253,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
+            if (window.matchMedia("(hover: none)").matches) return;
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
