@@ -1,6 +1,6 @@
 /* ========================================================
-   Dr. Ganesh Kumar M — Portfolio JavaScript
-   Premium Light Theme — Smooth interactions & animations
+   Dr. Dudekula Shaikshavali — Portfolio JavaScript
+   Handles navigation, animations, typing effect, counters
    ======================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    window.addEventListener('scroll', handleNavScroll, { passive: true });
+    window.addEventListener('scroll', handleNavScroll);
     handleNavScroll();
 
     // ---- Mobile Navigation Toggle ----
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateActiveNav() {
         const scrollY = window.scrollY + 150;
-        let activeSectionId = 'hero';
+        let activeSectionId = 'hero'; // Default to hero
 
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
@@ -71,42 +71,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    window.addEventListener('scroll', updateActiveNav);
 
-    // ---- Scroll Reveal Animation (Staggered) ----
+    // ---- Scroll Reveal Animation ----
     const revealElements = document.querySelectorAll('[data-reveal]');
 
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry, index) => {
             if (entry.isIntersecting) {
+                // Stagger the animation slightly
                 setTimeout(() => {
                     entry.target.classList.add('revealed');
-                }, index * 80);
+                }, index * 100);
                 revealObserver.unobserve(entry.target);
             }
         });
     }, {
-        threshold: 0.12,
-        rootMargin: '0px 0px -40px 0px'
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
     });
 
     revealElements.forEach(el => revealObserver.observe(el));
 
-    // ---- Animated Counters (Smooth easeOutCubic) ----
+    // ---- Animated Counters ----
     const counterElements = document.querySelectorAll('[data-target]');
 
     function animateCounter(element) {
         const target = parseInt(element.getAttribute('data-target'));
-        const duration = 2200;
+        const duration = 2000;
         const startTime = performance.now();
+        const startValue = 0;
 
         function updateCounter(currentTime) {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
 
-            // Smooth ease-out cubic
+            // Ease-out cubic
             const easeOut = 1 - Math.pow(1 - progress, 3);
-            const currentValue = Math.floor(target * easeOut);
+            const currentValue = Math.floor(startValue + (target - startValue) * easeOut);
 
             element.textContent = currentValue;
 
@@ -162,7 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!isDeleting && charIndex === currentPhrase.length) {
-            typingSpeed = 2500;
+            // Pause at end of phrase
+            typingSpeed = 2000;
             isDeleting = true;
         } else if (isDeleting && charIndex === 0) {
             isDeleting = false;
@@ -173,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(typeEffect, typingSpeed);
     }
 
+    // Start typing effect
     setTimeout(typeEffect, 1000);
 
     // ---- Smooth Scroll for Anchor Links ----
@@ -203,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const originalContent = btn.innerHTML;
 
             btn.innerHTML = '<i class="fas fa-check"></i> Message Sent!';
-            btn.style.background = '#1a8f4e';
+            btn.style.background = 'linear-gradient(135deg, #1db954, #1ed760)';
 
             setTimeout(() => {
                 btn.innerHTML = originalContent;
@@ -223,22 +227,38 @@ document.addEventListener('DOMContentLoaded', () => {
             const y = (e.clientY / window.innerHeight - 0.5) * 2;
 
             orbs.forEach((orb, index) => {
-                const speed = (index + 1) * 8;
+                const speed = (index + 1) * 10;
                 orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
             });
-        }, { passive: true });
+        });
     }
 
-    // ---- Card Hover Lift Effect ----
-    const cards = document.querySelectorAll('.project-card, .award-card, .metric-card, .exp-card, .contact-card');
-
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    // ---- Navbar Link Highlight on Hover ----
+    navLinks.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('active')) {
+                this.style.background = 'rgba(201, 169, 110, 0.06)';
+            }
         });
 
-        card.addEventListener('mouseleave', () => {
-            card.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        link.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('active')) {
+                this.style.background = '';
+            }
+        });
+    });
+
+    // ---- Card Hover Glow Effect ----
+    const cards = document.querySelectorAll('.project-card, .award-card, .metric-card, .exp-card');
+
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            card.style.setProperty('--glow-x', `${x}px`);
+            card.style.setProperty('--glow-y', `${y}px`);
         });
     });
 
@@ -256,16 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (newlyVisible < pubsToRevealPerClick) {
                     pubs[i].style.display = 'flex';
                     pubs[i].classList.remove('pub-hidden');
-
-                    // Animate in with a stagger
-                    pubs[i].style.opacity = '0';
-                    pubs[i].style.transform = 'translateY(20px)';
-                    setTimeout(() => {
-                        pubs[i].style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                        pubs[i].style.opacity = '1';
-                        pubs[i].style.transform = 'translateY(0)';
-                    }, newlyVisible * 100);
-
                     newlyVisible++;
                 }
             }
